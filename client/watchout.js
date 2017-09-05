@@ -10,17 +10,7 @@ var play = function () {
     .attr("width", gameOptions.width)
     .attr("height", gameOptions.height);
 
-  // var Player = function () {
-  // 	Player.prototype.path = "m 50, 50";
-  // 	Player.prototype.fill = 'red';
-
-  // 	Player.prototype.render = function(to) {
-  // 	  to.append('path').attr('d', this.path).attr('fill', this.fill);
-  // 	  return this;
-  // 	}
-  // };
-
-  // create enemyData using enemyCount, assign id and random x and y positions
+  // create enemyData using enemyCount, assign index as id and random x/y positions
   var createEnemies = function () {
     var enemiesData = [];
     for (var i = 0; i < gameOptions.enemyCount; i++) {
@@ -31,23 +21,34 @@ var play = function () {
       });
     }
     return enemiesData;
-  }
+  };
 
   // render enemy into the board
   var render = function (enemyData) {
-    var circle = gameBoard.append("circle").data([enemyData.id])
+    gameBoard.append("circle").data([enemyData.id])
       .attr("class", "enemy")
       .attr("cx", enemyData.x)
       .attr("cy", enemyData.y)
       .attr("r", 10)
-      .attr("fill", "red")
-  }
+      .attr("fill", "red");
+  };
+
+  // move enemies into new random x/y positions every 1 second
+  var move = function () {
+    gameBoard.selectAll("circle").transition().duration(1000)
+      .attr("cx", function (d) { return Math.random() * gameOptions.width; })
+      .attr("cy", function (d) { return Math.random() * gameOptions.height; });
+  };
+
+
 
   var enemiesData = createEnemies();
 
   enemiesData.forEach(function(enemyData) {
     render(enemyData);
   });
+
+  setInterval(move, 1000);
 
 };
 
